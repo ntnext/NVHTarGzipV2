@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = "NVHTarGzip"
-  s.version          = "1.0.1"
+  s.version          = "1.0.2"
   s.summary          = "A library to handle .tgz and .tar.gz files on iOS"
   s.description      = <<-DESC
                       Unpack and pack tarred and gzipped files with ease. Features:
@@ -14,8 +14,8 @@ Pod::Spec.new do |s|
   s.source           = { :git => "https://github.com/nvh/NVHTarGzip.git", :tag => s.version.to_s }
   s.social_media_url = 'https://twitter.com/nvh'
 
-  s.platform     = :ios, '7.0'
-  s.ios.deployment_target = '7.0'
+  s.platform     = :ios, '8.0'
+  s.ios.deployment_target = '8.0'
   s.requires_arc = true
 
   s.source_files = 'Classes/*'
