@@ -193,10 +193,8 @@ it simply add the following line to your `Podfile`:
 pod "NVHTarGzip"
 ```
 
-## Author
+## 2th Author
 
-Niels van Hoorn, nvh@nvh.io
+Seven, fengzilijie@qq.com
 
-## License
 
-*NVHTarGzip* is available under the *MIT license*. See the `LICENSE` file for more info.
