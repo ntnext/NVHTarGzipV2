@@ -13,6 +13,20 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.
+    
+    #define HOME_PATH       NSHomeDirectory()
+    #define TEMP_PATH       NSTemporaryDirectory()
+    #define DOC_PATH        [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0]
+    #define LIB_PATH        [NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) objectAtIndex:0]
+    #define CACHE_PATH      [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0]
+
+        
+    printf("home dir = %s\n",  [HOME_PATH cStringUsingEncoding:NSUTF8StringEncoding]);
+    printf("temp dir = %s\n",  [TEMP_PATH cStringUsingEncoding:NSUTF8StringEncoding]);
+    printf("doc dir = %s\n",   [DOC_PATH cStringUsingEncoding:NSUTF8StringEncoding]);
+    printf("lib dir = %s\n",   [LIB_PATH cStringUsingEncoding:NSUTF8StringEncoding]);
+    printf("cache dir = %s\n", [CACHE_PATH cStringUsingEncoding:NSUTF8StringEncoding]);
+        
     return YES;
 }
 							

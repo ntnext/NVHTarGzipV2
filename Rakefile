@@ -1,3 +1,5 @@
+# pod trunk register name@example.org 'Your Name' --description='macbook pro'
+
 desc "Runs the specs [EMPTY]"
 task :spec do
   # Provide your own implementation
@@ -55,14 +57,14 @@ task :release do
   sh "rake spec"
  
   puts "* Linting the podspec"
-  sh "pod lib lint"
+  sh "pod lib lint --allow-warnings"
 
   # Then release
   sh "git commit #{podspec_path} CHANGELOG.md -m 'Release #{spec_version}'"
   sh "git tag -a #{spec_version} -m 'Release #{spec_version}'"
   sh "git push origin master"
   sh "git push origin --tags"
-  sh "pod push master #{podspec_path}"
+  sh "pod trunk push #{podspec_path}"
 end
 
 # @return [Pod::Version] The version as reported by the Podspec.

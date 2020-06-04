@@ -36,6 +36,7 @@ const int64_t NVHProgressMaxTotalUnitCount = 100;
     self.progress.pausable = NO;
     
     return self;
+    
 }
 
 - (void)setVirtualTotalUnitCount:(int64_t)virtualTotalUnitCount

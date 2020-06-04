@@ -1,9 +1,5 @@
 # NVHTarGzip CHANGELOG
 
-## 1.0.2
-
-Folk and test.
-
 ## 1.0.1
 
 Original author's final release. Abort.
