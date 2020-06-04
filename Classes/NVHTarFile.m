@@ -43,7 +43,6 @@
 #define TAR_SIZE_SIZE                   12
 #define TAR_MAX_BLOCK_LOAD_IN_MEMORY    100
 
-
 // Define structure of POSIX 'ustar' tar header.
 // Provided by libarchive.
 #define	USTAR_name_offset 0
@@ -94,6 +93,15 @@
 #define TAR_ERROR_CODE_SOURCE_NOT_FOUND        2
 
 #import "NVHTarFile.h"
+
+// added by seven
+// fix issue https://github.com/nvh/NVHTarGzip/issues/21
+#include <sys/syslimits.h>
+
+#undef USTAR_name_size
+#define USTAR_name_size NAME_MAX
+
+//#define PATH_MAX
 
 @interface NVHTarFile()
 @end
@@ -279,7 +287,7 @@
     memset(&nameBytes, '\0', TAR_NAME_SIZE + 1); // Fill byte array with nul char
     NSUInteger location = (NSUInteger)offset + TAR_NAME_POSITION;
     memcpy(&nameBytes, [self dataForObject:object inRange:NSMakeRange(location, TAR_NAME_SIZE) orLocation:offset + TAR_NAME_POSITION andLength:TAR_NAME_SIZE].bytes, TAR_NAME_SIZE);
-    return [NSString stringWithCString:nameBytes encoding:NSASCIIStringEncoding];
+    return [NSString stringWithCString:nameBytes encoding:NSUTF8StringEncoding];
 }
 
 + (unsigned long long)sizeForObject:(id)object atOffset:(unsigned long long)offset
@@ -297,11 +305,15 @@
     BOOL created = NO;
     if ([object isKindOfClass:[NSData class]]) {
         NSData *contents = [object subdataWithRange:NSMakeRange((NSUInteger)location, (NSUInteger)length)];
+        
         created = [[NSFileManager defaultManager] createFileAtPath:path
                                                           contents:contents
                                                         attributes:nil]; //Write the file on filesystem
     } else if ([object isKindOfClass:[NSFileHandle class]]) {
-        created = [[NSFileManager defaultManager] createFileAtPath:path contents:nil attributes:nil];
+        // added by seven
+        // merged https://github.com/nvh/NVHTarGzip/issues/13
+        created = [[NSData data] writeToFile:path atomically:NO];
+//        created = [[NSFileManager defaultManager] createFileAtPath:path contents:nil attributes:nil];
         if (created) {
             NSFileHandle *destinationFile = [NSFileHandle fileHandleForWritingAtPath:path];
             [object seekToFileOffset:location];
@@ -621,7 +633,7 @@ static int format_octal(int64_t v, char *p, int s)
 
 - (void)writeString:(NSString*)string toChar:(char*)charArray withLength:(NSInteger)size
 {
-    NSData *stringData = [string dataUsingEncoding:NSASCIIStringEncoding];
+    NSData *stringData = [string dataUsingEncoding:NSUTF8StringEncoding];
     memset(charArray, '\0', size);
     [stringData getBytes:charArray length:[stringData length]];
 }

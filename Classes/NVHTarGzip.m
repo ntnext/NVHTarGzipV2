@@ -128,12 +128,16 @@
     NSProgress *progress = [NSProgress progressWithTotalUnitCount:2];
     [progress becomeCurrentWithPendingUnitCount:1];
     [self unGzipFileAtPath:sourcePath toPath:temporaryPath completion:^(NSError *gzipError) {
+        // This is main thread.
+        // FIXME: Send progress managing to main queue, make untar here in global queue.
+        
         [progress resignCurrent];
         if (gzipError != nil) {
             completion(gzipError);
             return;
         }
         [progress becomeCurrentWithPendingUnitCount:1];
+        
         [self unTarFileAtPath:temporaryPath toPath:destinationPath completion:^(NSError *tarError) {
             NSError* error = nil;
             [[NSFileManager defaultManager] removeItemAtPath:temporaryPath error:&error];

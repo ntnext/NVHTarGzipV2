@@ -1,12 +1,24 @@
 # NVHTarGzip
 
-[![Project Status: Unsupported - The project has reached a stable, usable state but the author(s) have ceased all work on it. A new maintainer may be desired.](http://www.repostatus.org/badges/latest/unsupported.svg)](http://www.repostatus.org/#unsupported)
-[![Version](http://cocoapod-badges.herokuapp.com/v/NVHTarGzip/badge.png)](http://cocoadocs.org/docsets/NVHTarGzip)
-[![Platform](http://cocoapod-badges.herokuapp.com/p/NVHTarGzip/badge.png)](http://cocoadocs.org/docsets/NVHTarGzip)
+## IS
 
-This is an *ObjC* library for *tarring*/*untarring* and *gzipping*/*ungzipping* that directly manipulates files. It isn't implemented as a category on `NSData` (unlike [GZIP](https://github.com/nicklockwood/GZIP) or [Godzippa](https://github.com/mattt/Godzippa)) so the full file doesn't have to be first loaded into memory.
+* [ ] https://github.com/nvh/NVHTarGzip/issues/23, works for me, if any shows up, contacts：fengzilijie@qq.com
+* [x] https://github.com/nvh/NVHTarGzip/issues/21, fixed
+* [x] https://github.com/nvh/NVHTarGzip/issues/19, fixed, NSASCIIStringEncoding -> NSUTF8StringEncoding
+* [x] https://github.com/nvh/NVHTarGzip/issues/18, ignored, providing your bug case?
+* [x] https://github.com/nvh/NVHTarGzip/issues/17, fixed
+* [x] https://github.com/nvh/NVHTarGzip/issues/16, ignored
+* [ ] https://github.com/nvh/NVHTarGzip/issues/14, works for me, if any shows up, contacts: fengzilijie@qq.com
+* [x] https://github.com/nvh/NVHTarGzip/issues/13, merged
+* [ ] https://github.com/nvh/NVHTarGzip/issues/11, TODO:
+* [ ] https://github.com/nvh/NVHTarGzip/issues/8, TODO: , clue: I defaulted back to the Light-Untar-for-iOS, and it worked. So not sure why this one wouldn't do it.
+* [ ] https://github.com/nvh/NVHTarGzip/issues/7, TODO:
 
-The *tar* implementation is based on [Light-Untar-for-iOS](https://github.com/mhausherr/Light-Untar-for-iOS), but is extended to include progress reporting through `NSProgress`.
+### PR
+
+* [x] https://github.com/nvh/NVHTarGzip/pull/24, merged
+* [x] https://github.com/nvh/NVHTarGzip/pull/22, https://github.com/nvh/NVHTarGzip/pull/20, they fixed the bug with cutting off the name when it exceeds, while i use NAME_MAX, if other show up, contacts: fengzilijie@qq.com
+* [x] https://github.com/nvh/NVHTarGzip/pull/12, partially merged, reject the fix about NSProgress multithreading issue.
 
 ## Usage
 
@@ -15,7 +27,7 @@ The *tar* implementation is based on [Light-Untar-for-iOS](https://github.com/mh
 #### Inflate Gzip file
 
 ```objective-c
-[[NVHTarGzip shared] unGzipFileAtPath:sourcePath toPath:destinationPath completion:^(NSError* gzipError) {
+[[NVHTarGzip sharedInstance] unGzipFileAtPath:sourcePath toPath:destinationPath completion:^(NSError* gzipError) {
     if (gzipError != nil) {
         NSLog(@"Error ungzipping %@", gzipError);
     }
@@ -25,7 +37,7 @@ The *tar* implementation is based on [Light-Untar-for-iOS](https://github.com/mh
 #### Untar file
 
 ```objective-c
-[[NVHTarGzip shared] unTarFileAtPath:sourcePath toPath:destinationPath completion:^(NSError* tarError) {
+[[NVHTarGzip sharedInstance] unTarFileAtPath:sourcePath toPath:destinationPath completion:^(NSError* tarError) {
     if (tarError != nil) {
         NSLog(@"Error untarring %@", tarError);
     }
@@ -35,7 +47,7 @@ The *tar* implementation is based on [Light-Untar-for-iOS](https://github.com/mh
 #### Inflate Gzip and Untar
 
 ```objective-c
-[[NVHTarGzip shared] unTarGzipFileAtPath:sourcePath toPath:destinationPath completion:^(NSError* error) {
+[[NVHTarGzip sharedInstance] unTarGzipFileAtPath:sourcePath toPath:destinationPath completion:^(NSError* error) {
     if (error != nil) {
         NSLog(@"Error extracting %@", error);
     }
@@ -45,7 +57,7 @@ The *tar* implementation is based on [Light-Untar-for-iOS](https://github.com/mh
 #### Deflate Gzip file
 
 ```objective-c
-[[NVHTarGzip shared] gzipFileAtPath:sourcePath toPath:destinationPath completion:^(NSError* gzipError) {
+[[NVHTarGzip sharedInstance] gzipFileAtPath:sourcePath toPath:destinationPath completion:^(NSError* gzipError) {
     if (gzipError != nil) {
         NSLog(@"Error gzipping %@", gzipError);
     }
@@ -55,7 +67,7 @@ The *tar* implementation is based on [Light-Untar-for-iOS](https://github.com/mh
 #### Tar file
 
 ```objective-c
-[[NVHTarGzip shared] tarFileAtPath:sourcePath toPath:destinationPath completion:^(NSError* tarError) {
+[[NVHTarGzip sharedInstance] tarFileAtPath:sourcePath toPath:destinationPath completion:^(NSError* tarError) {
     if (tarError != nil) {
         NSLog(@"Error tarring %@", tarError);
     }
@@ -65,7 +77,7 @@ The *tar* implementation is based on [Light-Untar-for-iOS](https://github.com/mh
 #### Deflate Gzip and Tar
 
 ```objective-c
-[[NVHTarGzip shared] tarGzipFileAtPath:sourcePath toPath:destinationPath completion:^(NSError* error) {
+[[NVHTarGzip sharedInstance] tarGzipFileAtPath:sourcePath toPath:destinationPath completion:^(NSError* error) {
     if (error != nil) {
         NSLog(@"Error packing %@", error);
     }
@@ -78,7 +90,7 @@ The *tar* implementation is based on [Light-Untar-for-iOS](https://github.com/mh
 #### Inflate Gzip file
 
 ```objective-c
-[[NVHTarGzip shared] unGzipFileAtPath:sourcePath toPath:destinationPath completion:^(NSError* gzipError) {
+[[NVHTarGzip sharedInstance] unGzipFileAtPath:sourcePath toPath:destinationPath completion:^(NSError* gzipError) {
     if (gzipError != nil) {
         NSLog(@"Error ungzipping %@", gzipError);
     }
@@ -88,7 +100,7 @@ The *tar* implementation is based on [Light-Untar-for-iOS](https://github.com/mh
 #### Untar file
 
 ```objective-c
-[[NVHTarGzip shared] unTarFileAtPath:sourcePath toPath:destinationPath completion:^(NSError* tarError) {
+[[NVHTarGzip sharedInstance] unTarFileAtPath:sourcePath toPath:destinationPath completion:^(NSError* tarError) {
     if (tarError != nil) {
         NSLog(@"Error untarring %@", tarError);
     }
@@ -98,7 +110,7 @@ The *tar* implementation is based on [Light-Untar-for-iOS](https://github.com/mh
 #### Inflate Gzip and Untar
 
 ```objective-c
-[[NVHTarGzip shared] unTarGzipFileAtPath:sourcePath toPath:destinationPath completion:^(NSError* error) {
+[[NVHTarGzip sharedInstance] unTarGzipFileAtPath:sourcePath toPath:destinationPath completion:^(NSError* error) {
     if (error != nil) {
         NSLog(@"Error extracting %@", error);
     }
@@ -108,7 +120,7 @@ The *tar* implementation is based on [Light-Untar-for-iOS](https://github.com/mh
 #### Deflate Gzip file
 
 ```objective-c
-[[NVHTarGzip shared] gzipFileAtPath:sourcePath toPath:destinationPath completion:^(NSError* gzipError) {
+[[NVHTarGzip sharedInstance] gzipFileAtPath:sourcePath toPath:destinationPath completion:^(NSError* gzipError) {
     if (gzipError != nil) {
         NSLog(@"Error gzipping %@", gzipError);
     }
@@ -118,7 +130,7 @@ The *tar* implementation is based on [Light-Untar-for-iOS](https://github.com/mh
 #### Tar file
 
 ```objective-c
-[[NVHTarGzip shared] tarFileAtPath:sourcePath toPath:destinationPath completion:^(NSError* tarError) {
+[[NVHTarGzip sharedInstance] tarFileAtPath:sourcePath toPath:destinationPath completion:^(NSError* tarError) {
     if (tarError != nil) {
         NSLog(@"Error untarring %@", tarError);
     }
@@ -128,7 +140,7 @@ The *tar* implementation is based on [Light-Untar-for-iOS](https://github.com/mh
 #### Deflate Gzip and Tar
 
 ```objective-c
-[[NVHTarGzip shared] tarGzipFileAtPath:sourcePath toPath:destinationPath completion:^(NSError* error) {
+[[NVHTarGzip sharedInstance] tarGzipFileAtPath:sourcePath toPath:destinationPath completion:^(NSError* error) {
     if (error != nil) {
         NSLog(@"Error extracting %@", error);
     }
@@ -139,7 +151,7 @@ The *tar* implementation is based on [Light-Untar-for-iOS](https://github.com/mh
 Sequential `tar.gz` packing and unpacking will either *tar* or *ungzip* the intermediate `tar` file to a temporary-directory, and subsequently *gzip* or *untar* it. After *gzipping*/*untarring*, the temporary-file is deleted. You can customize the cachePath by setting it on the singleton object before extracting:
 
 ```objective-c
-[[NVHTarGzip shared] setCachePath:customCachePath];
+[[NVHTarGzip sharedInstance] setCachePath:customCachePath];
 ```
 
 ### Progress 
@@ -151,7 +163,7 @@ NSProgress* progress = [NSProgress progressWithTotalUnitCount:1];
 NSString* keyPath = NSStringFromSelector(@selector(fractionCompleted));
 [progress addObserver:self forKeyPath:keyPath options:NSKeyValueObservingOptionInitial context:NVHProgressFractionCompletedObserverContext];
 [progress becomeCurrentWithPendingUnitCount:1];
-[[NVHTarGzip shared] unTarGzipFileAtPath:self.demoSourceFilePath toPath:self.demoDestinationFilePath completion:^(NSError* error) {
+[[NVHTarGzip sharedInstance] unTarGzipFileAtPath:self.demoSourceFilePath toPath:self.demoDestinationFilePath completion:^(NSError* error) {
     [progress resignCurrent];
     [progress removeObserver:self forKeyPath:keyPath];
 }];
@@ -164,6 +176,13 @@ Checkout a full usage example in the example project; clone the repo, and run `p
 Add streaming support (`NSStream`). This would allow the usage of an intermediate file for `tar.gz` packing and unpacking, thus speeding things a bit.
 
 Pull requests are welcome!
+
+* Current benchmark ?
+
+    - Cpu           Almost full payload
+    - Memory        Low when TarGzip?
+    - Disk          IO high payload
+    - Network       None
 
 ## Installation
 
