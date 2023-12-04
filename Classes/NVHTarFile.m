@@ -154,8 +154,48 @@
         [self updateProgressVirtualCompletedUnitCount:location];
         unsigned long long blockCount = 1; // 1 block for the header
         switch ([NVHTarFile typeForObject:object atOffset:location]) {
-            case '0':   // It's a File,
-            case '\0':  // For backward compatibility
+            case '5': // It's a directory
+            {
+                @autoreleasepool {
+                    NSString *name = [NVHTarFile nameForObject:object atOffset:location];
+#ifdef TAR_VERBOSE_LOG_MODE
+                    NSLog(@"UNTAR - directory - %@", name);
+#endif
+                    // Create a full path from the name
+                    NSString *directoryPath = [path stringByAppendingPathComponent:name];
+                    NSError *createError;
+                    BOOL created = [filemanager createDirectoryAtPath:directoryPath
+                                          withIntermediateDirectories:YES
+                                                           attributes:nil
+                                                                error:&createError]; //Write the directory on filesystem
+                    if (!created) {
+#ifdef TAR_VERBOSE_LOG_MODE
+                        NSLog(@"UNTAR - error during creating a directrory - %@", createError);
+#endif
+                    }
+                }
+                break;
+            }
+            case '1':
+            case '2':
+            case '3':
+            case '4':
+            case '6':
+            case '7':
+            case 'x':
+            case 'g': // It's not a file neither a directory
+            {
+#ifdef TAR_VERBOSE_LOG_MODE
+                NSLog(@"UNTAR - unsupported block");
+#endif
+                @autoreleasepool {
+                    unsigned long long objectSize = [NVHTarFile sizeForObject:object atOffset:location];
+                    blockCount += ceil(objectSize / TAR_BLOCK_SIZE);
+                }
+                break;
+            }
+                
+            default: // It's not a tar type
             {
                 @autoreleasepool {
                     NSString *name = [NVHTarFile nameForObject:object atOffset:location];
@@ -207,60 +247,6 @@
                                       withLength:objectSize
                                           atPath:filePath];
                 }
-                break;
-            }
-                
-            case '5': // It's a directory
-            {
-                @autoreleasepool {
-                    NSString *name = [NVHTarFile nameForObject:object atOffset:location];
-#ifdef TAR_VERBOSE_LOG_MODE
-                    NSLog(@"UNTAR - directory - %@", name);
-#endif
-                    // Create a full path from the name
-                    NSString *directoryPath = [path stringByAppendingPathComponent:name];
-                    NSError *createError;
-                    BOOL created = [filemanager createDirectoryAtPath:directoryPath
-                                          withIntermediateDirectories:YES
-                                                           attributes:nil
-                                                                error:&createError]; //Write the directory on filesystem
-                    if (!created) {
-#ifdef TAR_VERBOSE_LOG_MODE
-                        NSLog(@"UNTAR - error during creating a directrory - %@", createError);
-#endif
-                    }
-                }
-                break;
-            }
-            case '1':
-            case '2':
-            case '3':
-            case '4':
-            case '6':
-            case '7':
-            case 'x':
-            case 'g': // It's not a file neither a directory
-            {
-#ifdef TAR_VERBOSE_LOG_MODE
-                NSLog(@"UNTAR - unsupported block");
-#endif
-                @autoreleasepool {
-                    unsigned long long objectSize = [NVHTarFile sizeForObject:object atOffset:location];
-                    blockCount += ceil(objectSize / TAR_BLOCK_SIZE);
-                }
-                break;
-            }
-                
-            default: // It's not a tar type
-            {
-                NSDictionary *userInfo = [NSDictionary dictionaryWithObject:@"Invalid block type found"
-                                                                     forKey:NSLocalizedDescriptionKey];
-                
-                if (error != NULL) *error = [NSError errorWithDomain:TAR_ERROR_DOMAIN
-                                                                code:TAR_ERROR_CODE_BAD_BLOCK
-                                                            userInfo:userInfo];
-                
-                return NO;
             }
         }
         
